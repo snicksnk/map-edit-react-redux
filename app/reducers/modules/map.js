@@ -72,34 +72,6 @@ export const actions = {
     };
   }
 };
-/*
-const signUpEpic = action$ =>
-  action$.ofType(AUTH_SIGNUP)
-    .mergeMap(action =>
-      userApi.post(action.payload)
-      .map(response => {
-        const { status, body } = response;
-        if (status === 200) {
-          return actions.signUpSuccess(body);
-        } else {
-          return actions.signUpFail(body);
-        }
-      })
-    );
 
-const signInEpic = action$ =>
-  action$.ofType(AUTH_SIGNIN)
-    .mergeMap(action =>
-      authApi.post(action.payload)
-      .map(response => {
-        const { status, body } = response;
-        if (status === 200) {
-          return actions.signInSuccess(body);
-        } else {
-          return actions.signInFail(body);
-        }
-      })
-    );
-*/
 export const epics = combineEpics(
 );

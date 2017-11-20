@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Grid, Col, Row, Button, ButtonGroup, Alert } from 'react-bootstrap';
 import Map from './Map';
 import * as figuresLib from '../lib/figures';
 import s from '../styles/figureEditor.css';
-
-const loadGoogleMapsAPI = require('load-google-maps-api');
+import getGoogleApi from '../utils/getGoogleApi';
 
 export default class FigureEditor extends React.Component {
 
@@ -17,10 +16,7 @@ export default class FigureEditor extends React.Component {
   }
 
   componentWillMount() {
-    loadGoogleMapsAPI({
-      key: 'AIzaSyAshdAQdqtRyMmG7ffJrhlB6v7GKrdKjis',
-      libraries: ['places']
-    }).then(api => this.setState({ api }));
+    getGoogleApi().then(api => this.setState({ api }));
   }
 
   prepareFigures = () => {
@@ -86,10 +82,10 @@ export default class FigureEditor extends React.Component {
 
             {editMode && <ButtonGroup>
               <Button onClick={this.endDraw} bsStyle="success">
-                Complete edit
+                Save
               </Button>
               <Button onClick={this.cancelDraw} bsStyle="danger">
-                Cancel draw
+                Cancel
               </Button>
             </ButtonGroup>}
           </Col>
@@ -113,3 +109,9 @@ export default class FigureEditor extends React.Component {
     </div>);
   }
 }
+
+FigureEditor.propTypes = {
+  currentFigure: PropTypes.object.isRequired,
+  figures: PropTypes.object.isRequired,
+  mapActions: PropTypes.object.isRequired,
+};

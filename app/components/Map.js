@@ -66,9 +66,8 @@ export default class Map extends React.Component {
         });
 
         map.fitBounds(bounds);
-
-        this.setState({ searchBox });
       });
+      this.setState({ searchBox });
     }
   }
 
