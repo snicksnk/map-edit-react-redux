@@ -4,8 +4,6 @@ import { BrowserRouter } from 'react-router-dom';
 
 import Routes from '../routes';
 
-console.log('Routes', Routes);
-
 export default class Root extends Component {
   render() {
     const { store, history } = this.props;

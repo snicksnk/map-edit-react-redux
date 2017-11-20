@@ -2,6 +2,7 @@ import Immutable, { fromJS } from 'immutable';
 import { combineEpics } from 'redux-observable';
 
 const FIGURE_CREATE = 'map-editor/map/FIGURE_CREATE';
+const FIGURE_CANCEL = 'map-editor/map/FIGURE_CANCEL';
 const FIGURE_POINT_ADD = 'map-editor/map/FIGURE_POINT_ADD';
 const FIGURE_SAVE = 'map-editor/map/FIGURE_SAVE';
 
@@ -32,8 +33,12 @@ export default (state = initialState, action) => {
 
   case FIGURE_SAVE: {
     return state
-      // .updateIn(['figures'], figures => figures.push(state.get('currentFigure')))
+      .updateIn(['figures'], figures => figures.push(state.get('currentFigure')))
       .setIn(['currentFigure'], emptyFigure);
+  }
+
+  case FIGURE_CANCEL: {
+    return state.setIn(['currentFigure'], emptyFigure);
   }
 
   default:
@@ -57,6 +62,12 @@ export const actions = {
   figureSave() {
     return {
       type: FIGURE_SAVE,
+      payload: {}
+    };
+  },
+  figureCancel() {
+    return {
+      type: FIGURE_CANCEL,
       payload: {}
     };
   }

@@ -10,6 +10,7 @@ export const MapContainer = ({ actions, map }) => (
     <FigureEditor
       mapActions={actions}
       currentFigure={map.get('currentFigure')}
+      figures={map.get('figures')}
     />
   </div>
 );

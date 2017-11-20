@@ -10,7 +10,8 @@ export default class Map extends React.Component {
     this.state = {
       map: null,
       figures: [],
-      destroyFigures: []
+      destroyFigures: [],
+      searchBox: null
     };
   }
 
@@ -20,15 +21,12 @@ export default class Map extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { editMode, children: figures } = nextProps;
-    const cursor = editMode ? 'crosshair' : 'url(http://maps.google.com/mapfiles/openhand.cur), move';
-    this.setCursor(cursor);
+    const { children: figures } = nextProps;
     this.setState({ figures });
   }
 
   componentWillUpdate() {
     const { figures: oldFigures } = this.state;
-    console.log('componentWillReceiveProps', oldFigures);
     oldFigures.forEach(figure => {
       figure(null);
     });
@@ -36,10 +34,45 @@ export default class Map extends React.Component {
 
   setCursor(cursor) {
     const { map } = this.state;
-    map.setOptions({ draggableCursor: cursor });
+    if (map) {
+      map.setOptions({ draggableCursor: cursor });
+    }
   }
 
-  initMap = api => mapContainer => {
+  processSearchBox = api => input => {
+    const { map } = this.state;
+    if (map && input && !this.state.searchBox) {
+      const searchBox = new api.places.SearchBox(input);
+
+      map.addListener('bounds_changed', () => {
+        searchBox.setBounds(map.getBounds());
+      });
+
+      searchBox.addListener('places_changed', () => {
+        const places = searchBox.getPlaces();
+        const bounds = new api.LatLngBounds();
+
+        if (places.length === 0) {
+          return;
+        }
+
+        places.forEach((place) => {
+          if (place.geometry.viewport) {
+              // Only geocodes have viewport.
+            bounds.union(place.geometry.viewport);
+          } else {
+            bounds.extend(place.geometry.location);
+          }
+        });
+
+        map.fitBounds(bounds);
+
+        this.setState({ searchBox });
+      });
+    }
+  }
+
+  renderMap = api => mapContainer => {
     const { onClick } = this.props;
     if (!this.state.map) {
       const map = new api.Map(mapContainer, {
@@ -52,7 +85,6 @@ export default class Map extends React.Component {
         const lat = latLng.lat();
         const lng = latLng.lng();
         // populate yor box/field with lat, lng
-        console.log('Lat-lang', { lat, lng });
         onClick({ lat, lng });
       });
 
@@ -65,14 +97,18 @@ export default class Map extends React.Component {
   }
 
   render() {
-    const { api } = this.props;
+    const { api, editMode } = this.props;
+    const cursor = editMode ? 'crosshair' : 'url(http://maps.google.com/mapfiles/openhand.cur), move';
+    this.setCursor(cursor);
+
     return (<div>
       <FormControl
+        inputRef={this.processSearchBox(api)}
         type="text"
         className={s.searchInput}
         placeholder="search"
       />
-      <div ref={this.initMap(api)} className={s.map} />
+      <div ref={this.renderMap(api)} className={s.map} />
     </div>);
   }
 }

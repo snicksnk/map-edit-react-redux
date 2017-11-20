@@ -13,7 +13,6 @@ import Root from './containers/Root';
 const store = configureStore();
 const history = syncHistoryWithStore(createBrowserHistory(), store, {
   selectLocationState(state) {
-    console.log('----', state.get('routing').toJS());
     return state.get('routing').toJS();
   }
 });

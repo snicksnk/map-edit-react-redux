@@ -1,5 +1,7 @@
-.wrapper {
-  border: 1px solid;
-  height: 500px;
-  height: 100%;
+.figures {
+  padding-right: 30px;
+}
+
+.info {
+  margin-top: 20px;
 }
